@@ -10,7 +10,7 @@ struct Options {
     var extractFigures = true
     var minFigureAreaFraction: Double = 0.015
     var marginFraction: Double = 0.03
-    var jobs: Int = 4
+    var jobs: Int = 1
     var pageMarkers = false
     var quiet = false
 }
@@ -51,7 +51,10 @@ OPTIONS
                             (default: 0.015)
       --margin <f>          Ignore this fraction of each page edge when looking
                             for figures, to reject scan shadows (default: 0.03)
-  -j, --jobs <n>            Pages recognized concurrently (default: 4)
+  -j, --jobs <n>            Pages processed concurrently (default: 1). Text
+                            recognition is serialized regardless, because Vision
+                            crashes when run concurrently; higher values only
+                            overlap rendering and figure detection.
       --page-markers        Emit <!-- page N --> comments into the Markdown
   -q, --quiet               Suppress progress output
   -h, --help                Show this help

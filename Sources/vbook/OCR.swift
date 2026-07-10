@@ -47,7 +47,17 @@ func recognizePage(_ image: CGImage, languages: [String]) async throws -> PageOC
     request.textRecognitionOptions.recognitionLanguages = languages.map { Locale.Language(identifier: $0) }
     request.textRecognitionOptions.useLanguageCorrection = true
 
-    let observations = try await request.perform(on: image)
+    // Vision crashes when several recognitions run at once; serialize just this call.
+    await visionGate.wait()
+    let observations: [DocumentObservation]
+    do {
+        observations = try await request.perform(on: image)
+    } catch {
+        await visionGate.signal()
+        throw error
+    }
+    await visionGate.signal()
+
     guard let doc = observations.first?.document else { return PageOCR() }
 
     let lines = doc.text.lines

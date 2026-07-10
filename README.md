@@ -58,7 +58,10 @@ Set `VBOOK_DEBUG=1` to print the figure detector's per-page decisions to stderr.
 
 1. **Render.** Each page is drawn through `CGPDFPage.getDrawingTransform`, so the
    page's `/Rotate` entry is honored, at `--dpi` (default 300; the PDF user space is
-   72 dpi, so the scale factor is `dpi / 72`).
+   72 dpi, so the scale factor is `dpi / 72`). A page that is one full-page scanned
+   image is never magnified past that image's own pixel resolution — upscaling a
+   scan adds no detail and multiplies memory — while vector/text pages still honor
+   the full DPI.
 2. **Recognize.** `RecognizeDocumentsRequest` returns a document tree: title,
    paragraphs, tables, lists, and per-line `textDirection`. A page is treated as
    vertical when most of its lines report `.topToBottom`.
@@ -85,6 +88,14 @@ Set `VBOOK_DEBUG=1` to print the figure detector's per-page decisions to stderr.
 
 Text that falls inside a detected figure is dropped: line art reliably OCRs as
 stray glyphs (a crossed box becomes `XX`, a filled ellipse becomes `•`).
+
+## Performance and stability
+
+Text recognition is **serialized**: Vision's `RecognizeDocumentsRequest` segfaults
+intermittently when several recognitions run concurrently in one process, so all
+recognition passes through a single async gate. `--jobs` therefore defaults to 1
+and, when raised, only overlaps the cheaper rendering and figure-detection stages.
+A 120-page scanned book runs in about 100 s at ~0.4 GB peak memory.
 
 ## Known limitations
 

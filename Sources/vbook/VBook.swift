@@ -55,7 +55,10 @@ enum VBook {
         results.reserveCapacity(pageNumbers.count)
 
         for chunk in pageNumbers.chunked(into: options.jobs) {
-            let images = try chunk.map { try renderer.render(pageIndex: $0 - 1, dpi: options.dpi) }
+            var images: [CGImage] = []
+            for pageNumber in chunk {
+                images.append(try renderer.render(pageIndex: pageNumber - 1, dpi: options.dpi))
+            }
 
             try await withThrowingTaskGroup(of: PageResult.self) { group in
                 for (image, pageNumber) in zip(images, chunk) {
@@ -92,6 +95,7 @@ enum VBook {
         image: CGImage, pageNumber: Int, options: Options, figureOptions: FigureOptions,
         imagesDir: URL, imagesDirName: String
     ) async throws -> PageResult {
+        debugLog("recognize page \(pageNumber) (\(image.width)x\(image.height))")
         let page = try await recognizePage(image, languages: options.languages)
 
         var blocks: [PlacedBlock] = []
@@ -99,6 +103,7 @@ enum VBook {
         var figureCount = 0
 
         if options.extractFigures {
+            debugLog("detect figures page \(pageNumber)")
             let rects = detectFigures(image: image, page: page, options: figureOptions)
             for (n, rect) in rects.enumerated() {
                 let name = String(format: "p%03d-fig%02d.png", pageNumber, n + 1)

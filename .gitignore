@@ -3,3 +3,6 @@
 Package.resolved
 .DS_Store
 *.o
+
+# Local working notes, not part of the published project
+worklog/

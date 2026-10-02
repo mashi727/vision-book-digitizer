@@ -1,5 +1,5 @@
 Turn a scanned book into Markdown
-	:comment Problem: OCR scrambles vertical text
+	:comment Challenge: OCR scrambles vertical text
 	:comment Approach: let Vision recover the order
 	Start the run@$ vbook book.pdf -o out
 	:while Pages left?

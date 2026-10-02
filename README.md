@@ -19,7 +19,7 @@ out/
 
 ## How it works
 
-What problem this solves and how, as a PAD (Problem Analysis Diagram). See the sections below for details.
+What challenge this addresses and how, as a PAD (Problem Analysis Diagram). See the sections below for details.
 
 <img src="docs/pad/concept.png" alt="Concept PAD. To turn a scanned book into Markdown, each page is rendered, recognized by Vision, stripped of figures that are cropped as PNG, and sorted into reading order by text direction, then written as Markdown with an images folder" width="100%">
 

@@ -17,6 +17,14 @@ out/
     └── p012-fig01.png
 ```
 
+## How it works
+
+What problem this solves and how, as a PAD (Problem Analysis Diagram). See the sections below for details.
+
+<img src="docs/pad/concept.png" alt="Concept PAD. To turn a scanned book into Markdown, each page is rendered, recognized by Vision, stripped of figures that are cropped as PNG, and sorted into reading order by text direction, then written as Markdown with an images folder" width="100%">
+
+<sub>Diagram source: [`docs/pad/concept.spd`](docs/pad/concept.spd). Checked and rendered with [padkit](https://github.com/mashi727/padkit).</sub>
+
 ## Requirements
 
 - **macOS 26 (Tahoe) or later.** `RecognizeDocumentsRequest` and
@@ -54,7 +62,7 @@ vbook <input.pdf> [options]
 
 Set `VBOOK_DEBUG=1` to print the figure detector's per-page decisions to stderr.
 
-## How it works
+## How it works in detail
 
 1. **Render.** Each page is drawn through `CGPDFPage.getDrawingTransform`, so the
    page's `/Rotate` entry is honored, at `--dpi` (default 300; the PDF user space is

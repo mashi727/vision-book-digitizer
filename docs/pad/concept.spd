@@ -1,0 +1,20 @@
+Turn a scanned book into Markdown
+	:comment Problem: OCR scrambles vertical text
+	:comment Approach: let Vision recover the order
+	Start the run@$ vbook book.pdf -o out
+	:while Pages left?
+		Render the page at --dpi@(never past the scan's own pixels)
+		Recognize the document structure@(serialized: Vision crashes@ when run concurrently)
+		:if Figures wanted?
+			Remove recognized text from the ink
+			Crop the remaining ink as PNG
+			Drop text that falls inside a figure
+		:else
+			Skip figures (--no-figures)
+		Sort blocks into reading order
+			:if Most lines run top to bottom?
+				Columns right to left
+			:else
+				Top to bottom
+	Write <title>.md and <title>_images/
+	:terminal Markdown plus figure images
